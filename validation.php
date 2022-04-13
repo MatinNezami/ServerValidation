@@ -1,5 +1,7 @@
 <?php
 
+namespace Validation;
+
 class Validate {
 
     function __construct ($data, $patterns) {

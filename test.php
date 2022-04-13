@@ -8,7 +8,7 @@
         "password" => "HxAic9@20#"
     ];
 
-    $validate = new Validate($data, 
+    $validate = new \Validation\Validate($data, 
         "username check=username required"
     );
 
