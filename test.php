@@ -1,6 +1,7 @@
 <?php
 
     require_once "validation.php";
+    use Validation;
 
     $data = [
         "first-name" => "matin",
@@ -11,7 +12,5 @@
     $validate = new \Validation\Validate($data, 
         "username check=username required"
     );
-
-    var_dump($validate->data);
 
 ?>
