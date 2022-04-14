@@ -34,7 +34,19 @@
     }
 
     class Validate {
-        public $ok, $message, $patterns = [];
+        public $ok, $message;
+        private $patterns = [];
+
+        function validate () {
+            foreach ($this->patterns as $pattern) {
+                if ($pattern->required && !$pattern->value) {
+                    $this->ok = false;
+                    $this->message = "input is empty";
+                }
+
+                if (!$pattern->required && !$pattern->value) continue;
+            }
+        }
 
         function __construct ($data, $patterns) {
             foreach ($patterns as $pattern) {
@@ -42,6 +54,8 @@
 
                 array_push($this->patterns, new Pattern($pattern, $name, $data[$name]));
             }
+
+            $this->validate();
         }
 
     }
