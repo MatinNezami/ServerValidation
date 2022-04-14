@@ -3,6 +3,7 @@
     namespace Validation;
 
     class Pattern {
+        private $pattern;
 
         private function getAttr ($attr) {
             if (!str_contains($this->pattern, $attr)) return;
@@ -24,10 +25,10 @@
             $this->check = $this->getAttr("check")?? "text";
             $this->same = $this->getAttr("same-password");
 
-            if ($this->check == "file") {
-                $this->size = $this->getAttr("size");
-                $this->mime = $this->getAttr("mime");
-            }
+            if ($this->check != "file") return;
+
+            $this->size = $this->getAttr("size");
+            $this->mime = $this->getAttr("mime");
         }
 
     }
