@@ -4,17 +4,16 @@
 
     $data = [
         "first-name" => "matin",
+        "email" => "matin@gmail.com",
         "username" => "matinnez",
         "password" => "HxAic9@20#"
     ];
 
     $validate = new \Validation\Validate($data, [
-        "first-name required min=2 check=text"
+        "first-name required min=2 check=text",
+        "email required check=email"
     ]);
 
-    if (!$validate->ok)
-        die($validate->message . "\n");
-
-    else echo "data is valid\n";
+    echo $validate->message . "\n";
 
 ?>

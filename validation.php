@@ -50,6 +50,12 @@
             );
         }
 
+        function email ($pattern) {
+            return new Status(
+                filter_var($pattern->value, FILTER_VALIDATE_EMAIL)
+            );
+        }
+
         function validate () {
             foreach ($this->patterns as $pattern) {
                 if ($pattern->required && !$pattern->value)
@@ -67,8 +73,10 @@
                 if ($same) 
                     return $validate->status? new Status(false, "password and username is same"): $validate;
 
-                return $validate;
+                if (!$validate->status) return $validate;
             }
+
+            return new Status(true, "data is valid");
         }
 
         function __construct (&$data, $patterns) {
@@ -82,7 +90,7 @@
             $validate = $this->validate();
 
             $this->ok = $validate->status;
-            $this->message = $this->ok? "data is valid": str_replace("-", " ", $validate->message);
+            $this->message = str_replace("-", " ", $validate->message);
         }
 
     }
