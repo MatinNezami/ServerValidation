@@ -12,6 +12,6 @@
         "username check=username required"
     ]);
 
-    var_dump($validate);
+    var_dump($validate->ok, $validate->message);
 
 ?>

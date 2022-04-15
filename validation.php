@@ -33,18 +33,37 @@
 
     }
 
+    class Status {
+        function __construct ($status, $message) {
+            $this->status = $status;
+            $this->message = $message;
+        }
+    }
+
     class Validate {
         public $ok, $message;
         private $patterns = [];
 
+        function url ($pattern) {
+            return new Status (true, "url invalid");
+        }
+
         function validate () {
             foreach ($this->patterns as $pattern) {
-                if ($pattern->required && !$pattern->value) {
-                    $this->ok = false;
-                    $this->message = "input is empty";
-                }
+                if ($pattern->required && !$pattern->value)
+                    return new Status(false, "input is empty");
 
                 if (!$pattern->required && !$pattern->value) continue;
+
+                $validate = $this->{$pattern->check}($pattern);
+                $same = $pattern->same && $this->same($pattern->value,
+                    array_filter($this->patterns, fn($item) => $item->name == $pattern->same)->value
+                );
+
+                if ($same) 
+                    return $validate->status? new Status(false, "password and username is same"): $validate;
+
+                return $validate;
             }
         }
 
@@ -55,7 +74,10 @@
                 array_push($this->patterns, new Pattern($pattern, $name, $data[$name]));
             }
 
-            $this->validate();
+            $validate = $this->validate();
+
+            $this->ok = $validate->status;
+            $this->message = $validate->message;
         }
 
     }
