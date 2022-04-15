@@ -36,7 +36,7 @@
     class Status {
         function __construct ($status, $message = NULL) {
             $this->status = $status;
-            $this->message = $message instanceof Pattern? $message->name . " invalid": $message;
+            $this->message = $message;
         }
     }
 
@@ -46,8 +46,7 @@
 
         function text ($pattern) {
             return new Status(
-                preg_match("/^.{" . $pattern->min . "," . $pattern->max . "}$/", $pattern->value),
-                $pattern
+                preg_match("/^.{" . $pattern->min . "," . $pattern->max . "}$/", $pattern->value)
             );
         }
 
@@ -62,6 +61,8 @@
                 $same = $pattern->same && $this->same($pattern->value,
                     array_filter($this->patterns, fn($item) => $item->name == $pattern->same)->value
                 );
+
+                $validate->message = $validate->message?? $pattern->name . " invalid";
 
                 if ($same) 
                     return $validate->status? new Status(false, "password and username is same"): $validate;
