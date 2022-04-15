@@ -69,6 +69,16 @@
             );
         }
 
+        function password ($pattern) {
+            return new Status(
+                preg_match("/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{" . $pattern->min . "," . $pattern->max . "}$/",
+                    $pattern->value
+                ),
+                
+                "password isn't strong"
+            );
+        }
+
         function validate () {
             foreach ($this->patterns as $pattern) {
                 if ($pattern->required && !$pattern->value)
