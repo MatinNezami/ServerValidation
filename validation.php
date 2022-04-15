@@ -70,9 +70,10 @@
             }
         }
 
-        function __construct ($data, $patterns) {
+        function __construct (&$data, $patterns) {
             foreach ($patterns as $pattern) {
                 $name = substr($pattern, 0, strpos($pattern, " "));
+                $data[$name] = trim($data[$name]);
 
                 array_push($this->patterns, new Pattern($pattern, $name, $data[$name]));
             }
