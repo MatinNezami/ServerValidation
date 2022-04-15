@@ -61,6 +61,14 @@
                 return new Status(false, "number out of range");
         }
 
+        function username ($pattern) {
+            return new Status(
+                preg_match("/^(?=.{" . $pattern->min . "," . $pattern->max . "}$)(?![_.])(?!.*[_.]{2})[a-zA-Z0-9._]+(?<![_.])$/",
+                    $pattern->value
+                )
+            );
+        }
+
         function validate () {
             foreach ($this->patterns as $pattern) {
                 if ($pattern->required && !$pattern->value)
