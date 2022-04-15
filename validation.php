@@ -56,6 +56,11 @@
             );
         }
 
+        function number ($pattern) {
+            if (!(+$pattern->value >= $pattern->min && +$pattern->value <= $pattern->max))
+                return new Status(false, "number out of range");
+        }
+
         function validate () {
             foreach ($this->patterns as $pattern) {
                 if ($pattern->required && !$pattern->value)
@@ -63,7 +68,7 @@
 
                 if (!$pattern->required && !$pattern->value) continue;
 
-                $validate = $this->{$pattern->check}($pattern);
+                $validate = $this->{$pattern->check}($pattern)?? new Status(true);
                 $same = $pattern->same && $this->same($pattern->value,
                     array_filter($this->patterns, fn($item) => $item->name == $pattern->same)->value
                 );
