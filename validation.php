@@ -82,7 +82,7 @@
             $validate = $this->validate();
 
             $this->ok = $validate->status;
-            $this->message = str_replace("-", " ", $validate->message);
+            $this->message = $this->ok? "data is valid": str_replace("-", " ", $validate->message);
         }
 
     }
