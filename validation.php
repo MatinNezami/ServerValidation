@@ -84,6 +84,12 @@
                 if (str_contains(strtolower($username), $item)) return true;
         }
 
+        function url ($pattern) {
+            return new Status(
+                filter_var($pattern->value, FILTER_VALIDATE_URL)
+            );
+        }
+
         function validate () {
             foreach ($this->patterns as $pattern) {
                 if ($pattern->required && !$pattern->value)
@@ -92,15 +98,9 @@
                 if (!$pattern->required && !$pattern->value) continue;
 
                 $validate = $this->{$pattern->check}($pattern)?? new Status(true);
-                // $sameTarget = fn() => end(array_filter($this->patterns, fn($item) => $item->name == $pattern->same));
-
                 $validate->message = $validate->message?? $pattern->name . " invalid";
 
-                // if ($this->same($pattern->value, $pattern->same && $sameTarget()->value)) 
-                //     return $validate->status? new Status(false, "password and username is same"): $validate;
-
                 $sameTarget = [...array_filter($this->patterns, fn($item) => $item->name == $pattern->same)];
-
                 $same = $pattern->same && $this->same($pattern->value, $sameTarget[0]->value);
 
                 if ($same)
