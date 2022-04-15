@@ -34,9 +34,9 @@
     }
 
     class Status {
-        function __construct ($status, $message) {
+        function __construct ($status, $message = NULL) {
             $this->status = $status;
-            $this->message = $message;
+            $this->message = $message instanceof Pattern? $message->name . " invalid": $message;
         }
     }
 
@@ -44,8 +44,11 @@
         public $ok, $message;
         private $patterns = [];
 
-        function url ($pattern) {
-            return new Status (true, "url invalid");
+        function text ($pattern) {
+            return new Status(
+                preg_match("/^.{" . $pattern->min . "," . $pattern->max . "}$/", $pattern->value),
+                $pattern
+            );
         }
 
         function validate () {
@@ -77,7 +80,7 @@
             $validate = $this->validate();
 
             $this->ok = $validate->status;
-            $this->message = $validate->message;
+            $this->message = str_replace("-", " ", $validate->message);
         }
 
     }

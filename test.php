@@ -9,9 +9,12 @@
     ];
 
     $validate = new \Validation\Validate($data, [
-        "username check=username required"
+        "first-name required min=2 check=text"
     ]);
 
-    var_dump($validate->ok, $validate->message);
+    if (!$validate->ok)
+        die($validate->message . "\n");
+
+    else echo "data is valid\n";
 
 ?>
