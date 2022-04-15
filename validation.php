@@ -74,9 +74,14 @@
                 preg_match("/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{" . $pattern->min . "," . $pattern->max . "}$/",
                     $pattern->value
                 ),
-                
+
                 "password isn't strong"
             );
+        }
+
+        function same ($password, $username) {
+            foreach (str_split(strtolower($password), 3) as $item)
+                if (str_contains(strtolower($username), $item)) return true;
         }
 
         function validate () {
@@ -87,13 +92,18 @@
                 if (!$pattern->required && !$pattern->value) continue;
 
                 $validate = $this->{$pattern->check}($pattern)?? new Status(true);
-                $same = $pattern->same && $this->same($pattern->value,
-                    array_filter($this->patterns, fn($item) => $item->name == $pattern->same)->value
-                );
+                // $sameTarget = fn() => end(array_filter($this->patterns, fn($item) => $item->name == $pattern->same));
 
                 $validate->message = $validate->message?? $pattern->name . " invalid";
 
-                if ($same) 
+                // if ($this->same($pattern->value, $pattern->same && $sameTarget()->value)) 
+                //     return $validate->status? new Status(false, "password and username is same"): $validate;
+
+                $sameTarget = [...array_filter($this->patterns, fn($item) => $item->name == $pattern->same)];
+
+                $same = $pattern->same && $this->same($pattern->value, $sameTarget[0]->value);
+
+                if ($same)
                     return $validate->status? new Status(false, "password and username is same"): $validate;
 
                 if (!$validate->status) return $validate;
