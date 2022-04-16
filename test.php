@@ -8,7 +8,8 @@
         "age" => "  19  ",
         "id" => "matin",
         "password" => "HXiJcoo!@9",
-        "location" => "http://www.w3.org?page=xmlns"
+        "location" => "http://www.w3.org?page=xmlns",
+        "phone-number" => "+989901115289"
     ];
 
     $validate = new \Validation\Validate($data, [
@@ -17,7 +18,8 @@
         "id check=username required same-password=password",
         "age check=number min=18",
         "password check=password required",
-        "location check=url"
+        "location check=url",
+        "phone-number required check=tel"
     ]);
 
     echo $validate->message . "\n";

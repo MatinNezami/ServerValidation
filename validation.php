@@ -90,6 +90,12 @@
             );
         }
 
+        function tel ($pattern) {
+            return new Status(
+                preg_match("/^\+\d{12}$/", $pattern->value)
+            );
+        }
+
         function validate () {
             foreach ($this->patterns as $pattern) {
                 if ($pattern->required && !$pattern->value)
