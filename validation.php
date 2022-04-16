@@ -23,7 +23,9 @@
             $this->min = $this->getAttr("min")?? 5;
             $this->max = $this->getAttr("max")?? 30;
             $this->check = $this->getAttr("check")?? "text";
+
             $this->same = $this->getAttr("same-password");
+            $this->retype = str_contains($pattern, "retype-reference");
 
             if ($this->check != "file") return;
 
@@ -93,6 +95,19 @@
         function tel ($pattern) {
             return new Status(
                 preg_match("/^\+\d{12}$/", $pattern->value)
+            );
+        }
+
+        function retype ($pattern) {
+            $reference = [...array_filter(
+                $this->patterns, fn($item) => $item->retype
+            )];
+
+            if (!isset($reference[0])) return;
+
+            return new Status(
+                $pattern->value == $reference[0]->value,
+                "conferm password"
             );
         }
 
