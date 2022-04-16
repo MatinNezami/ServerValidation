@@ -111,6 +111,28 @@
             );
         }
 
+        function message ($pattern, $validate) {
+            return $validate->message?? $pattern->name . " invalid";
+        }
+
+        function add ($value, $pattern) {
+            $pattern = new Pattern($pattern, "", $value);
+
+            if (!$this->ok || !$pattern->required && !$value) return;
+
+            if ($pattern->required && !$value) {
+                $this->ok = false;
+                return $this->message = "input is empty";
+            }
+
+            $validate = $this->{$pattern->check}($pattern);
+
+            if ($validate->status) return;
+
+            $this->ok = false;
+            $this->message = $this->message($pattern, $validate);
+        }
+
         function validate () {
             foreach ($this->patterns as $pattern) {
                 if ($pattern->required && !$pattern->value)
@@ -119,7 +141,7 @@
                 if (!$pattern->required && !$pattern->value) continue;
 
                 $validate = $this->{$pattern->check}($pattern)?? new Status(true);
-                $validate->message = $validate->message?? $pattern->name . " invalid";
+                $validate->message = $this->message($pattern, $validate);
 
                 $sameTarget = [...array_filter($this->patterns, fn($item) => $item->name == $pattern->same)];
                 $same = $pattern->same && $this->same($pattern->value, $sameTarget[0]->value);

@@ -4,11 +4,11 @@
 
     $data = [
         "first-name" => "matin",
-        "email" => "matin@gmail.com",
+        "email" => "matin@email.com",
         "age" => "  19  ",
         "id" => "matin",
         "password" => "HXiJcoo!@9",
-        "re-enter" => "Hexiido91@",
+        "re-enter" => "HXiJcoo!@9",
         "location" => "http://www.w3.org?page=xmlns",
         "phone-number" => "+989901115289"
     ];
@@ -23,6 +23,8 @@
         "phone-number required check=tel",
         "re-enter required check=retype"
     ]);
+
+    $validate->add("Xhi@d 9c ;3@", "check=password required");
 
     echo $validate->message . "\n";
 
