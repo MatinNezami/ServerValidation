@@ -22,7 +22,7 @@
 
             $this->min = $this->getAttr("min")?? 5;
             $this->max = $this->getAttr("max")?? 30;
-            $this->retype = $this->getAttr("retype-password");
+            $this->retype = $this->getAttr("retype");
             $this->check = $this->getAttr("check")?? "text";
 
             $this->same = $this->getAttr("same-password");

@@ -21,10 +21,10 @@
         "password check=password required",
         "location check=url",
         "phone-number required check=tel",
-        "re-enter required retype-password=password"
+        "re-enter required retype=password"
     ]);
 
-    $validate->add("HXiJcoo!@9", "retype-password=password required");
+    $validate->add("HXiJcoo!@9", "retype=password required");
 
     echo $validate->message . "\n";
 
