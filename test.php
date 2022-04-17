@@ -18,13 +18,13 @@
         "email required check=email",
         "id check=username required same-password=password",
         "age check=number min=18",
-        "password check=password required retype-reference",
+        "password check=password required",
         "location check=url",
         "phone-number required check=tel",
-        "re-enter required check=retype"
+        "re-enter required retype-password=password"
     ]);
 
-    $validate->add("Xhi@d 9c ;3@", "check=password required");
+    $validate->add("HXiJcoo!@9", "retype-password=password required");
 
     echo $validate->message . "\n";
 

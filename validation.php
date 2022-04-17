@@ -22,10 +22,10 @@
 
             $this->min = $this->getAttr("min")?? 5;
             $this->max = $this->getAttr("max")?? 30;
+            $this->retype = $this->getAttr("retype-password");
             $this->check = $this->getAttr("check")?? "text";
 
             $this->same = $this->getAttr("same-password");
-            $this->retype = str_contains($pattern, "retype-reference");
 
             if ($this->check != "file") return;
 
@@ -100,7 +100,7 @@
 
         function retype ($pattern) {
             $reference = [...array_filter(
-                $this->patterns, fn($item) => $item->retype
+                $this->patterns, fn($item) => $item->name == $pattern->retype
             )];
 
             if (!isset($reference[0])) return;
@@ -115,32 +115,42 @@
             return $validate->message?? $pattern->name . " invalid";
         }
 
+        function setStatus ($status, $message) {
+            $this->status = $status;
+            $this->message = $message;
+        }
+
         function add ($value, $pattern) {
             $pattern = new Pattern($pattern, "", $value);
 
             if (!$this->ok || !$pattern->required && !$value) return;
 
-            if ($pattern->required && !$value) {
-                $this->ok = false;
-                return $this->message = "input is empty";
-            }
+            if ($pattern->required && !$value)
+                return $this->setStatus(false, "input is empty");
 
+            if ($pattern->retype && !($this->retype($pattern)?? new Status(true))->status)
+                return $this->setStatus(false, "conferm password");
+    
             $validate = $this->{$pattern->check}($pattern);
-
+                
             if ($validate->status) return;
 
-            $this->ok = false;
-            $this->message = $this->message($pattern, $validate);
+            $this->setStatus(false, $this->message($pattern, $validate));
         }
 
         function validate () {
+            $ok = new Status(true);
+
             foreach ($this->patterns as $pattern) {
                 if ($pattern->required && !$pattern->value)
                     return new Status(false, "input is empty");
 
                 if (!$pattern->required && !$pattern->value) continue;
 
-                $validate = $this->{$pattern->check}($pattern)?? new Status(true);
+                if ($pattern->retype)
+                    return $this->retype($pattern)?? $ok;
+
+                $validate = $this->{$pattern->check}($pattern)?? $ok;
                 $validate->message = $this->message($pattern, $validate);
 
                 $sameTarget = [...array_filter($this->patterns, fn($item) => $item->name == $pattern->same)];
@@ -152,7 +162,7 @@
                 if (!$validate->status) return $validate;
             }
 
-            return new Status(true, "data is valid");
+            return $ok;
         }
 
         function __construct (&$data, $patterns) {
@@ -166,7 +176,6 @@
             $validate = $this->validate();
 
             $this->ok = $validate->status;
-            $this->message = str_replace("-", " ", $validate->message);
+            $this->message = str_replace("-", " ", $this->ok? "data is valid": $validate->message);
         }
-
     }
