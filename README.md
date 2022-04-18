@@ -34,6 +34,17 @@ Patterns array is parameter `Validate` class constructor function:
 * Check with types: `check` directive value is validation type
 
 
+#### Validation Files
+
+`profile mime=webp,png,jpeg min=10K max=10M`
+
+`mime` directive for upload file type: `image`, `video`, `mpeg` and more types  
+`max` and `min` directive for size range upload file: `100K`, `10G` and more sizes
+
+You can insert multiple type `mime="svg, video"`  
+Warning: you can't use float number in sizes, for example `1.5G`
+
+
 ## Tips
 
 

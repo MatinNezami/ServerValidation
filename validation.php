@@ -20,8 +20,10 @@
 
             $this->required = str_contains($pattern, "required");
 
+            $max = $this->getAttr("max");
+
             $this->min = $this->getAttr("min")?? 5;
-            $this->max = $this->getAttr("max")?? 30;
+            $this->max = $max?? 30;
             $this->retype = $this->getAttr("retype");
             $this->check = $this->getAttr("check")?? "text";
 
@@ -29,7 +31,7 @@
 
             if ($this->check != "file") return;
 
-            $this->size = $this->getAttr("size");
+            $this->max = $max?? 10_000_000_000;
             $this->mime = $this->getAttr("mime");
         }
 
@@ -111,6 +113,31 @@
             );
         }
 
+        function fileSize (...$sizes) {
+            foreach ($sizes as $size)
+                yield str_replace("K", "000", str_replace("M", "000000", str_replace("G", "000000000", $size)));
+        }
+
+        function file ($pattern) {
+            $has;
+
+            foreach (explode(",", $pattern->mime) as $mime)
+                if (str_contains($pattern->value["type"], str_replace(",", "", $mime)))
+                    $has = true;
+
+            if (!$has) return new Status (false, "upload file type invalid");
+
+            $sizes = $this->fileSize($pattern->min, $pattern->max);
+            $min = $sizes->current();
+            $sizes->next();
+
+            if ($pattern->value["size"] < $min)
+                return new Status(false, "upload file is small");
+
+            if ($pattern->value["size"] > $sizes->current())
+                return new Status(false, "upload file is big");
+        }
+
         function message ($pattern, $validate) {
             return $validate->message?? $pattern->name . " invalid";
         }
@@ -168,7 +195,9 @@
         function __construct (&$data, $patterns) {
             foreach ($patterns as $pattern) {
                 $name = substr($pattern, 0, strpos($pattern, " "));
-                $data[$name] = trim($data[$name]);
+
+                if (is_string($data[$name]))
+                    $data[$name] = trim($data[$name]);
 
                 array_push($this->patterns, new Pattern($pattern, $name, $data[$name]));
             }

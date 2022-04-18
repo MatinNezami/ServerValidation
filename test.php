@@ -25,6 +25,11 @@
     ]);
 
     $validate->add("HXiJcoo!@9", "retype=password required");
+    
+
+    $file = new \Validation\Validate($_FILES, [
+        "profile mime=webp,png,jpeg,svg min=10K max=10M required"
+    ]);
 
     echo $validate->message . "\n";
 
