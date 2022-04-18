@@ -46,6 +46,18 @@ Warning: you can't use float number in sizes, for example `1.5G`
 Tip: default `max` directive value is `10G`
 
 
+#### Validation Encode Files (Base64)
+
+If you need validation base64 files, you can use `base64` type  
+you can use `max`, `min` and `mime` directive, for exaple:
+
+```php
+$validate = new \Validation\Validate($_POST, [
+    "profile check=base64 min=1M max=10M required"
+]);
+```
+
+
 ## Tips
 
 
@@ -76,6 +88,7 @@ First parameter is value and last parameter is pattern
 * text
 * email
 * number
+* base64
 
 Warning you can only use `retype`, type in `add` method,
 so use in value pattern set `retype` directive

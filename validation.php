@@ -29,7 +29,7 @@
 
             $this->same = $this->getAttr("same-password");
 
-            if ($this->check != "file") return;
+            if ($this->check != "file" && $this->check != "base64") return;
 
             $this->max = $max?? "10G";
             $this->mime = $this->getAttr("mime");
@@ -103,9 +103,9 @@
 
             if (!isset($reference[0])) return;
 
-            $this->setStatus(
-                $pattern->value == $reference[0]->value, "conferm password"
-            );
+            $equal = $pattern->value == $reference[0]->value;
+
+            $this->setStatus($equal, $equal? "data is valid": "conferm password");
         }
 
         function fileSize (...$sizes) {
@@ -114,7 +114,7 @@
         }
 
         function file ($pattern) {
-            $has;
+            $has = NULL;
 
             foreach (explode(",", $pattern->mime) as $mime)
                 if (str_contains($pattern->value["type"], str_replace(",", "", $mime)))
@@ -133,8 +133,26 @@
                 return $this->setStatus(false, "upload file is big");
         }
 
-        function message ($pattern, $validate) {
-            return $validate->message?? $pattern->name . " invalid";
+        function base64 ($pattern) {
+            $has = NULL;
+            $bin = base64_decode($pattern->value);
+            $type = finfo_buffer(finfo_open(), $bin, FILEINFO_MIME_TYPE);
+
+            foreach (explode(",", $pattern->mime) as $mime)
+                if (str_contains($type, str_replace(",", "", $mime))) $has = true;
+
+            if (!$has) return $this->setStatus(false, "upload file type invalid");
+
+            $size = strlen($bin);
+            $sizes = $this->fileSize($pattern->min, $pattern->max);
+            $min = $sizes->current();
+            $sizes->next();
+
+            if ($size < $min)
+                return $this->setStatus(false, "upload file is small");
+
+            if ($size > $sizes->current())
+                return $this->setStatus(false, "upload file is big");
         }
 
         function setStatus ($status, $message) {
@@ -154,10 +172,10 @@
             if ($pattern->required && !$value)
                 return $this->setStatus(false, "input is empty");
 
-            if ($pattern->retype && ($this->retype($pattern) || true) && !$this->ok)
-                return $this->setStatus(false, "conferm password");
+            if ($pattern->retype)
+                return $this->retype($pattern);
 
-            if (!isset($this->{$pattern->check}))
+            if (!method_exists($this, $pattern->check))
                 return $this->setStatus(true, "data is valid");
     
             $this->{$pattern->check}($pattern);

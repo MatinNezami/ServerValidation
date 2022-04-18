@@ -24,8 +24,11 @@
         "re-enter required retype=password"
     ]);
 
+    $fileContent = base64_encode(file_get_contents("image.jpg"));
+
     $validate->add("iran zanjan", "location check=text required");
     $validate->add("HXiJcoo!@9", "user-retype retype=password required");
+    $validate->add($fileContent, "profile check=base64 mime=webp,jpeg min=10K requried");
     
 
     // $file = new \Validation\Validate($_FILES, [
