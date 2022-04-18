@@ -31,7 +31,7 @@
 
             if ($this->check != "file") return;
 
-            $this->max = $max?? 10_000_000_000;
+            $this->max = $max?? "10G";
             $this->mime = $this->getAttr("mime");
         }
 
