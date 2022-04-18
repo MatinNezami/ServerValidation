@@ -43,7 +43,7 @@ Patterns array is parameter `Validate` class constructor function:
 
 You can insert multiple type `mime="svg, video"`  
 Warning: you can't use float number in sizes, for example `1.5G`  
-Tip: default `max` directive value is `10G`
+Tip: default `max` directive value is `10G` and `min` directive value is `1K`
 
 
 #### Validation Encode Files (Base64)

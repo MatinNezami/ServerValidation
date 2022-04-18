@@ -21,8 +21,9 @@
             $this->required = str_contains($pattern, "required");
 
             $max = $this->getAttr("max");
+            $min = $this->getAttr("min");
 
-            $this->min = $this->getAttr("min")?? 5;
+            $this->min = $min?? 5;
             $this->max = $max?? 30;
             $this->retype = $this->getAttr("retype");
             $this->check = $this->getAttr("check")?? "text";
@@ -32,6 +33,7 @@
             if ($this->check != "file" && $this->check != "base64") return;
 
             $this->max = $max?? "10G";
+            $this->min = $min?? "1K";
             $this->mime = $this->getAttr("mime");
         }
 
