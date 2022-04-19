@@ -2,6 +2,7 @@
 
     require_once "validation.php";
 
+    $fileContent = base64_encode(file_get_contents("image.jpg"));
     $data = [
         "first-name" => "matin",
         "email" => "matin@email.com",
@@ -10,7 +11,8 @@
         "password" => "HXiJcoo!@9",
         "re-enter" => "HXiJcoo!@9",
         "url" => "http://www.w3.org?page=xmlns",
-        "phone-number" => "+989901115289"
+        "phone-number" => "+989901115289",
+        "profile" => $fileContent
     ];
 
     $validate = new \Validation\Validate($data, [
@@ -22,14 +24,13 @@
         "url check=url",
         "phone-number required check=tel",
         "test check=email required",
-        "re-enter required retype=password"
+        "re-enter required retype=password",
+        "profile check=base64 mime=webp,jpeg min=10K requried"
     ]);
 
-    $fileContent = base64_encode(file_get_contents("image.jpg"));
 
     $validate->add("iran zanjan", "location check=text required");
     $validate->add("HXiJcoo!@9", "user-retype retype=password required");
-    $validate->add($fileContent, "profile check=base64 mime=webp,jpeg min=10K requried");
     
 
     // $file = new \Validation\Validate($_FILES, [

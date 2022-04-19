@@ -181,7 +181,7 @@
                 return $this->setStatus(true, "data is valid");
     
             $this->{$pattern->check}($pattern);
-            $this->dash();
+            $this->isValid();
         }
 
         function validate () {
@@ -199,10 +199,15 @@
                 if (!$this->ok) break;
 
                 $sameTarget = [...array_filter($this->patterns, fn($item) => $item->name == $pattern->same)];
-                $same = $pattern->same && $this->same($pattern->value, $sameTarget[0]->value);
+                $same = $pattern->same && $sameTarget && $this->same($pattern->value, $sameTarget[0]->value);
 
                 if ($same) return $this->setStatus(false, "password and username is same");
             }
+        }
+
+        function isValid () {
+            if ($this->ok) $this->message = "data is valid";
+            $this->dash();
         }
 
         function getName ($pattern) {
@@ -222,8 +227,6 @@
             }
 
             $this->validate();
-
-            if ($this->ok) $this->message = "data is valid";
-            $this->dash();
+            $this->isValid();
         }
     }
