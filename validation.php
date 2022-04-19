@@ -162,30 +162,15 @@
             $this->message = $message instanceof Pattern? $message->name . " invalid": $message;
         }
 
-        function dash () {
-            $this->message = str_replace("-", " ", $this->message);
-        }
-
         function add ($value, $pattern) {
-            $pattern = new Pattern($pattern, $this->getName($pattern), $value);
-
-            if (!$this->ok || !$pattern->required && !$value) return;
-
-            if ($pattern->required && !$value)
-                return $this->setStatus(false, "input is empty");
-
-            if ($pattern->retype)
-                return $this->retype($pattern);
-
-            if (!method_exists($this, $pattern->check))
-                return $this->setStatus(true, "data is valid");
-    
-            $this->{$pattern->check}($pattern);
+            $this->validate([new Pattern($pattern, $this->getName($pattern), $value)]);
             $this->isValid();
         }
 
-        function validate () {
-            foreach ($this->patterns as $pattern) {
+        function validate ($patterns) {
+            if (!$this->ok and $this->ok !== NULL)return;
+            
+            foreach ($patterns as $pattern) {
                 if ($pattern->required && !$pattern->value)
                     return $this->setStatus(false, "input is empty");
 
@@ -207,7 +192,7 @@
 
         function isValid () {
             if ($this->ok) $this->message = "data is valid";
-            $this->dash();
+            $this->message = str_replace("-", " ", $this->message);
         }
 
         function getName ($pattern) {
@@ -226,7 +211,7 @@
                 array_push($this->patterns, new Pattern($pattern, $name, $data[$name]));
             }
 
-            $this->validate();
+            $this->validate($this->patterns);
             $this->isValid();
         }
     }

@@ -29,8 +29,8 @@
     ]);
 
 
-    $validate->add("iran zanjan", "location check=text required");
     $validate->add("HXiJcoo!@9", "user-retype retype=password required");
+    $validate->add("iran zanjan", "location check=text same-password=password required");
     
 
     // $file = new \Validation\Validate($_FILES, [
