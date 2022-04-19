@@ -21,6 +21,7 @@
         "password check=password required",
         "url check=url",
         "phone-number required check=tel",
+        "test check=email required",
         "re-enter required retype=password"
     ]);
 

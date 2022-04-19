@@ -213,6 +213,8 @@
             foreach ($patterns as $pattern) {
                 $name = $this->getName($pattern);
 
+                if (!isset($data[$name])) continue;
+
                 if (is_string($data[$name]))
                     $data[$name] = trim($data[$name]);
 
